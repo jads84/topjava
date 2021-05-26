@@ -12,8 +12,6 @@ public class UserMealWithExcess {
     private boolean excess;
     private final transient Map<LocalDate, Integer> caloriesPerDay;
 
-
-    // старый конструктор, не используется, оставил для совместимости
     public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
         this.dateTime = dateTime;
         this.description = description;
@@ -22,8 +20,6 @@ public class UserMealWithExcess {
         this.caloriesPerDay = null;
     }
 
-
-    // Конструктор, который сразу всё знает о текущем приёме пищи. Мапа не нужна
     public UserMealWithExcess(UserMeal meal, boolean excess) {
         this.dateTime = meal.getDateTime();
         this.description = meal.getDescription();
@@ -32,18 +28,12 @@ public class UserMealWithExcess {
         this.caloriesPerDay = null;
     }
 
-
-    // Конструктор для нового функционала, который на этапе создания этого приёма пищи
-    // ещё не знает о том, было ли превышение по колориям за этот день или нет.
-    // сохраняем в DTOшке ссылку на мапу, в которой считаем привышение
-    // При сериализации обновляем поле excess
     public UserMealWithExcess(UserMeal meal, Map<LocalDate, Integer> caloriesPerDay) {
         this.dateTime = meal.getDateTime();
         this.description = meal.getDescription();
         this.calories = meal.getCalories();
         this.caloriesPerDay = caloriesPerDay;
     }
-
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -63,7 +53,6 @@ public class UserMealWithExcess {
             return caloriesPerDay.get(dateTime.toLocalDate()) > caloriesPerDay.get(null);
         } else return excess;
     }
-
 
     @Override
     public String toString() {
