@@ -1,38 +1,30 @@
 package ru.javawebinar.topjava.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.function.Supplier;
 
 public class UserMealWithExcess {
 
     private final LocalDateTime dateTime;
     private final String description;
     private final int calories;
-    private boolean excess;
-    private final transient Map<LocalDate, Integer> caloriesPerDay;
+    private final boolean excess;
+    private final transient Supplier<Boolean> excessSupplier;
 
     public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
         this.excess = excess;
-        this.caloriesPerDay = null;
+        this.excessSupplier = null;
     }
 
-    public UserMealWithExcess(UserMeal meal, boolean excess) {
-        this.dateTime = meal.getDateTime();
-        this.description = meal.getDescription();
-        this.calories = meal.getCalories();
-        this.excess = excess;
-        this.caloriesPerDay = null;
-    }
-
-    public UserMealWithExcess(UserMeal meal, Map<LocalDate, Integer> caloriesPerDay) {
-        this.dateTime = meal.getDateTime();
-        this.description = meal.getDescription();
-        this.calories = meal.getCalories();
-        this.caloriesPerDay = caloriesPerDay;
+    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, Supplier<Boolean> excessGetter) {
+        this.dateTime = dateTime;
+        this.description = description;
+        this.calories = calories;
+        this.excess = false;
+        this.excessSupplier = excessGetter;
     }
 
     public LocalDateTime getDateTime() {
@@ -48,10 +40,7 @@ public class UserMealWithExcess {
     }
 
     public boolean isExcess() {
-        if (caloriesPerDay != null) {
-            // calories > limit
-            return caloriesPerDay.get(dateTime.toLocalDate()) > caloriesPerDay.get(null);
-        } else return excess;
+        return (excessSupplier == null) ? excess : excessSupplier.get();
     }
 
     @Override

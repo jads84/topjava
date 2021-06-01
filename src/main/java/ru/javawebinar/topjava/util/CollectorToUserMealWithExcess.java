@@ -3,16 +3,18 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static ru.javawebinar.topjava.util.TimeUtil.isBetweenHalfOpen;
+import static ru.javawebinar.topjava.util.UserMealsUtil.createUserMealWithExcess;
 
 public class CollectorToUserMealWithExcess implements Collector<UserMeal, List<UserMeal>, List<UserMealWithExcess>> {
 
@@ -46,7 +48,12 @@ public class CollectorToUserMealWithExcess implements Collector<UserMeal, List<U
 
     @Override
     public Function<List<UserMeal>, List<UserMealWithExcess>> finisher() {
-        return meals -> UserMealsUtil.filteredByOneCycles(meals, startTime, endTime, caloriesLimit);
+        Map<LocalDate, Integer> caloriesPerDay = new HashMap<>();
+        return userMeals -> userMeals.stream()
+                .peek(meal -> caloriesPerDay.merge(meal.getLocalDate(), meal.getCalories(), Integer::sum))
+                .filter(meal -> isBetweenHalfOpen(meal.getLocalTime(), startTime, endTime))
+                .map(meal -> createUserMealWithExcess(meal, () -> caloriesPerDay.get(meal.getLocalDate()) > caloriesLimit))
+                .collect(Collectors.toList());
     }
 
     @Override
