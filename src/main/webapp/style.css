@@ -14,3 +14,25 @@ table.meals th, td {
     border-color: gray;
     background-color: white;
 }
+
+div.meal div {
+    width: 555px;
+    display: flex;
+    align-items: center;
+}
+
+div.meal input {
+    width: 400px;
+}
+
+div.meal label {
+    display: inline-block;
+    width: 140px;
+    text-align: right;
+    margin-right: 15px;
+}
+div.meal div.button {
+    width: 555px;
+    display: flex;
+    justify-content: flex-end;
+}

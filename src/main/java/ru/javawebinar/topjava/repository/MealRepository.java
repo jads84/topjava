@@ -5,7 +5,12 @@ import ru.javawebinar.topjava.model.Meal;
 import java.util.List;
 
 public interface MealRepository {
-    List<Meal> getAllMeals();
+    List<Meal> getAll();
 
-    int getCaloriesPerDay();
+    default void delete(long mealId) {
+    }
+
+    default Object getMealById(long mealId) {
+        return null;
+    }
 }

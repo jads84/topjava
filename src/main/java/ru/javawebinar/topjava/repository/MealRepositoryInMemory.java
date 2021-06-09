@@ -7,7 +7,7 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 
-public class MealRepositoryConstant implements MealRepository {
+public class MealRepositoryInMemory implements MealRepository {
 
     private static final List<Meal> meals = Arrays.asList(
             new Meal(1L, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),

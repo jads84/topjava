@@ -15,13 +15,18 @@
         <th>Дата/Время</th>
         <th>Описание</th>
         <th>Калории</th>
+        <th></th>
+        <th></th>
     </tr>
+    <c:set var="DATE_TIME_FORMATTER" value="${requestScope.DATE_TIME_FORMATTER}"/>
     <c:set var="mealsTo" value="${requestScope.mealsTo}"/>
     <c:forEach items="${mealsTo}" var="mealTo">
-        <tr style="color: <c:out value="${mealTo.excess ? 'red' : 'green'}"/>;">
-            <td><c:out value="${mealTo.dateTime.format(DateTimeFormatter.ofPattern('yyyy.MM.dd HH:mm'))}"/></td>
-            <td><c:out value="${mealTo.description}"/></td>
-            <td><c:out value="${mealTo.calories}"/></td>
+        <tr style="color: ${mealTo.excess ? 'red' : 'green'};">
+            <td>${mealTo.dateTime.format(DATE_TIME_FORMATTER)}</td>
+            <td>${mealTo.description}</td>
+            <td>${mealTo.calories}</td>
+            <td><a href="meals?action=read&mealId=${mealTo.id}">Update</a></td>
+            <td><a href="meals?action=delete&mealId=${mealTo.id}">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
