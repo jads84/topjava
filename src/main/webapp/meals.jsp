@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
 <html lang="ru">
 <head>
     <title>Meals</title>
@@ -10,6 +9,8 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
+<a href="meals?action=editNew">Add meal</a>
+<br><br>
 <table class="meals">
     <tr>
         <th>Дата/Время</th>
@@ -25,8 +26,8 @@
             <td>${mealTo.dateTime.format(DATE_TIME_FORMATTER)}</td>
             <td>${mealTo.description}</td>
             <td>${mealTo.calories}</td>
-            <td><a href="meals?action=read&mealId=${mealTo.id}">Update</a></td>
-            <td><a href="meals?action=delete&mealId=${mealTo.id}">Delete</a></td>
+            <td><a href="meals?action=edit&id=${mealTo.id}">Update</a></td>
+            <td><a href="meals?action=delete&id=${mealTo.id}">Delete</a></td>
         </tr>
     </c:forEach>
 </table>
