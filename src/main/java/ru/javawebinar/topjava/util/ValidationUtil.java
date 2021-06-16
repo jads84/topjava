@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.util;
 
 
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 public class ValidationUtil {
@@ -30,6 +31,10 @@ public class ValidationUtil {
         if (!entity.isNew()) {
             throw new IllegalArgumentException(entity + " must be new (id=null)");
         }
+    }
+
+    public static boolean checkAccess(Meal meal, int userId) {
+        return meal != null && meal.getUserId() == userId;
     }
 
     public static void assureIdConsistent(AbstractBaseEntity entity, int id) {
