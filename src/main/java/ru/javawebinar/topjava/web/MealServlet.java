@@ -13,10 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
-import static ru.javawebinar.topjava.web.SecurityUtil.*;
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 public class MealServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
@@ -26,6 +27,13 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init() {
         repository = new InMemoryMealRepository();
+        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500), SecurityUtil.authUserId());
+        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000), SecurityUtil.authUserId());
+        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500), SecurityUtil.authUserId());
+        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100), SecurityUtil.authUserId());
+        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000), SecurityUtil.authUserId());
+        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500), SecurityUtil.authUserId());
+        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410), SecurityUtil.authUserId());
     }
 
     @Override
