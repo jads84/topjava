@@ -27,13 +27,13 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init() {
         repository = new InMemoryMealRepository();
-        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500), SecurityUtil.authUserId());
-        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000), SecurityUtil.authUserId());
-        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500), SecurityUtil.authUserId());
-        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100), SecurityUtil.authUserId());
-        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000), SecurityUtil.authUserId());
-        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500), SecurityUtil.authUserId());
-        repository.save(new Meal(SecurityUtil.authUserId(), null, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410), SecurityUtil.authUserId());
+        repository.save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500, SecurityUtil.authUserId()), SecurityUtil.authUserId());
+        repository.save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000, SecurityUtil.authUserId()), SecurityUtil.authUserId());
+        repository.save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500, SecurityUtil.authUserId()), SecurityUtil.authUserId());
+        repository.save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100, SecurityUtil.authUserId()), SecurityUtil.authUserId());
+        repository.save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000, SecurityUtil.authUserId()), SecurityUtil.authUserId());
+        repository.save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500, SecurityUtil.authUserId()), SecurityUtil.authUserId());
+        repository.save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410, SecurityUtil.authUserId()), SecurityUtil.authUserId());
     }
 
     @Override
@@ -41,10 +41,10 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
 
-        Meal meal = new Meal(id.isEmpty() ? SecurityUtil.authUserId() : Integer.parseInt(id),
-                LocalDateTime.parse(request.getParameter("dateTime")),
+        Meal meal = new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
+                Integer.parseInt(request.getParameter("calories")),
+                id.isEmpty() ? SecurityUtil.authUserId() : Integer.parseInt(id));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         repository.save(meal, authUserId());
@@ -65,7 +65,7 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(authUserId(), LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, authUserId()) :
                         repository.get(getId(request), authUserId());
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
