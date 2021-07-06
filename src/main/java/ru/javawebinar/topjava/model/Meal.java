@@ -25,10 +25,6 @@ public class Meal extends AbstractBaseEntity {
         this.calories = calories;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -47,10 +43,6 @@ public class Meal extends AbstractBaseEntity {
 
     public LocalTime getTime() {
         return dateTime.toLocalTime();
-    }
-
-    public boolean isNew() {
-        return id == null;
     }
 
     @Override
