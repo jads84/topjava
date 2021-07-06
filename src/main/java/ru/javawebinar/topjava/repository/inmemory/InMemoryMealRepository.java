@@ -20,25 +20,27 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkAccess;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
+    private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
     private final Map<Integer, Meal> database = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
-    private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (!checkAccess(meal, userId)) {
-            log.info("don't save, access denied ");
-            return null;
-        }
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             log.info("save {}", meal);
             database.put(meal.getId(), meal);
             return meal;
+        } else {
+            Meal old = get(meal.getId(), userId);
+            if (old == null) {
+                log.info("don't save, access denied ");
+                return null;
+            }
+            // handle case: update, but not present in storage
+            log.info("update {}", meal);
+            return database.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
         }
-        // handle case: update, but not present in storage
-        log.info("update {}", meal);
-        return database.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
