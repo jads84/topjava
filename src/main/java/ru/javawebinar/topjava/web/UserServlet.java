@@ -1,10 +1,11 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.repository.UserRepository;
-import ru.javawebinar.topjava.repository.inmemory.InMemoryUserRepository;
+import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,14 +19,15 @@ import static ru.javawebinar.topjava.util.RequestUtil.getUserId;
 public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
 
-    private UserRepository userRepository;
+    private AdminRestController adminRestController;
 
     @Override
     public void init() {
-        userRepository = new InMemoryUserRepository();
-
-        userRepository.save(new User(null, "Admin", "admin@mail.ru", "root", Role.ADMIN));
-        userRepository.save(new User(null, "User", "user@mail.ru", "root", Role.USER));
+        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
+            adminRestController = appCtx.getBean(AdminRestController.class);
+        }
+        adminRestController.create(new User(null, "Admin", "admin@mail.ru", "root", Role.ADMIN));
+        adminRestController.create(new User(null, "User", "user@mail.ru", "root", Role.USER));
     }
 
     @Override
