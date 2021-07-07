@@ -16,11 +16,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Objects;
 
+import static ru.javawebinar.topjava.util.RequestUtil.getMealId;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 public class MealServlet extends HttpServlet {
@@ -32,15 +31,6 @@ public class MealServlet extends HttpServlet {
     public void init() {
         try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
             mealRestController = appCtx.getBean(MealRestController.class);
-            mealRestController.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500, authUserId()));
-
-            mealRestController.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500, authUserId()));
-            mealRestController.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000, authUserId()));
-            mealRestController.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500, authUserId()));
-            mealRestController.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100, authUserId()));
-            mealRestController.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000, authUserId()));
-            mealRestController.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500, authUserId()));
-            mealRestController.create(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410, authUserId()));
         }
     }
 
@@ -83,7 +73,7 @@ public class MealServlet extends HttpServlet {
 
         switch (action == null ? "all" : action) {
             case "delete":
-                int id = getId(request);
+                int id = getMealId(request);
                 log.info("Delete {}", id);
                 mealRestController.delete(id);
                 response.sendRedirect("meals");
@@ -92,7 +82,7 @@ public class MealServlet extends HttpServlet {
             case "update":
                 final Meal meal = ("create".equals(action)) ?
                         new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, authUserId()) :
-                        mealRestController.get(getId(request));
+                        mealRestController.get(getMealId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
@@ -119,9 +109,4 @@ public class MealServlet extends HttpServlet {
                 LocalTime.parse(value);
     }
 
-
-    private int getId(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("id"));
-        return Integer.parseInt(paramId);
-    }
 }

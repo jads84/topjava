@@ -8,7 +8,9 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.ComparationUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,24 @@ public class InMemoryMealRepository implements MealRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryMealRepository.class);
     private final Map<Integer, Meal> database = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
+
+    public InMemoryMealRepository() {
+        // Admin
+        int userId = 1;
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 18, 0), "Стейк", 410, userId), userId);
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 12, 0), "Карбанара", 410, userId), userId);
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 6, 0), "Яйца Бенедикт", 410, userId), userId);
+
+        // User
+        userId = 2;
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500, userId), userId);
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000, userId), userId);
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500, userId), userId);
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100, userId), userId);
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000, userId), userId);
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500, userId), userId);
+        save(new Meal(null, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410, userId), userId);
+    }
 
     @Override
     public Meal save(Meal meal, int userId) {
