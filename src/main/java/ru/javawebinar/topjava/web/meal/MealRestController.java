@@ -4,10 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
@@ -50,4 +53,13 @@ public class MealRestController {
         assureIdConsistent(meal, id);
         service.update(meal, authUserId());
     }
+
+    public List<MealTo> getFilteredByDateTime(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        int userId = authUserId();
+        log.info("getFilteredByDateTime with startDate={}, endDate={}, startTime={}, endTime={} with userId={}",
+                startDate, endDate, startTime, endTime, userId);
+        List<Meal> mealList = service.getFilteredByDateTime(startDate, endDate, startTime, endTime, userId);
+        return MealsUtil.getTos(mealList, authUserCaloriesPerDay());
+    }
+
 }
