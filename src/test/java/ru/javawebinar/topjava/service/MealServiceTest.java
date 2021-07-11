@@ -49,14 +49,20 @@ public class MealServiceTest {
         expected.setId(actual1.getId());
         Meal actual2 = mealService.get(actual1.getId(), USER_ID);
 
-        assertThat(actual1).isEqualTo(expected);
-        assertThat(actual2).isEqualTo(expected);
+        assertThat(actual1)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
+        assertThat(actual2)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
     public void get() {
         Meal meal = mealService.get(MEAL_ID, USER_ID);
-        assertThat(meal).isEqualTo(MealTestData.meal);
+        assertThat(meal)
+                .usingRecursiveComparison()
+                .isEqualTo(MealTestData.meal);
     }
 
     @Test
@@ -75,7 +81,9 @@ public class MealServiceTest {
         expected.setDateTime(LocalDateTime.of(2021, Month.JANUARY, 31, 0, 0));
         mealService.update(expected, USER_ID);
         Meal actual = mealService.get(MEAL_ID, USER_ID);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .isEqualTo(expected);
     }
 
     @Test
